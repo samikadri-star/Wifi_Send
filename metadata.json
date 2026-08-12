@@ -1,6 +1,0 @@
-{
-  "name": "واي فاي دايركت - نقل الملفات السريع",
-  "description": "تطبيق إرسال واستقبال الملفات والمجلدات عبر الواي فاي دايركت بسرعات فائقة مع دعم استئناف التحميل وتصميم عصري",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}
