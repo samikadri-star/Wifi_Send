@@ -39,7 +39,8 @@ fun HomeScreen(
     viewModel: TransferViewModel,
     onNavigateToFiles: () -> Unit,
     onNavigateToP2pScan: () -> Unit,
-    onNavigateToTransfers: () -> Unit
+    onNavigateToTransfers: () -> Unit,
+    onOpenThemeSelector: () -> Unit = {}
 ) {
     val progress by viewModel.transferProgress.collectAsState()
     val connectedDevice by viewModel.connectedDevice.collectAsState()
@@ -66,7 +67,7 @@ fun HomeScreen(
                     .clip(RoundedCornerShape(28.dp))
                     .border(
                         1.dp,
-                        Brush.horizontalGradient(listOf(PrimaryCyan.copy(alpha = 0.5f), PrimaryBlue.copy(alpha = 0.2f))),
+                        Brush.horizontalGradient(listOf(MaterialTheme.colorScheme.primary.copy(alpha = 0.5f), MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.2f))),
                         RoundedCornerShape(28.dp)
                     ),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
@@ -79,13 +80,13 @@ fun HomeScreen(
                     ) {
                         Surface(
                             shape = RoundedCornerShape(12.dp),
-                            color = PrimaryCyan.copy(alpha = 0.15f)
+                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
                         ) {
                             Text(
                                 text = "تقنية Wi-Fi Direct 5G High-Speed",
                                 modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
                                 style = MaterialTheme.typography.labelMedium,
-                                color = PrimaryCyan,
+                                color = MaterialTheme.colorScheme.primary,
                                 fontWeight = FontWeight.Bold
                             )
                         }
@@ -104,7 +105,7 @@ fun HomeScreen(
                         Text(
                             text = "نقل مباشر بين الأجهزة بمدى واسع وبسرعة تصل إلى 200 ميغابايت/ثانية بدون إنترنت وبدعم استئناف التحميل.",
                             style = MaterialTheme.typography.bodyMedium,
-                            color = TextSecondaryDark
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
 
                         Spacer(modifier = Modifier.height(20.dp))
@@ -112,7 +113,7 @@ fun HomeScreen(
                         // Connection Status Pill
                         Surface(
                             shape = RoundedCornerShape(16.dp),
-                            color = if (connectedDevice != null) PrimaryCyan.copy(alpha = 0.2f) else MaterialTheme.colorScheme.surfaceVariant
+                            color = if (connectedDevice != null) MaterialTheme.colorScheme.primary.copy(alpha = 0.2f) else MaterialTheme.colorScheme.surfaceVariant
                         ) {
                             Row(
                                 modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
@@ -121,7 +122,7 @@ fun HomeScreen(
                                 Icon(
                                     imageVector = if (connectedDevice != null) Icons.Default.WifiTethering else Icons.Default.WifiOff,
                                     contentDescription = null,
-                                    tint = if (connectedDevice != null) PrimaryCyan else TextSecondaryDark,
+                                    tint = if (connectedDevice != null) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
                                     modifier = Modifier.size(20.dp)
                                 )
                                 Spacer(modifier = Modifier.width(8.dp))
@@ -129,7 +130,7 @@ fun HomeScreen(
                                     text = if (connectedDevice != null) "اقتران نشط: ${connectedDevice?.deviceName}" else "جاهز للاقتران المباشر عبر الواي فاي",
                                     style = MaterialTheme.typography.labelLarge,
                                     fontWeight = FontWeight.Bold,
-                                    color = if (connectedDevice != null) PrimaryCyan else TextSecondaryDark
+                                    color = if (connectedDevice != null) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
                         }
@@ -173,7 +174,7 @@ fun HomeScreen(
                         .height(110.dp)
                         .clickable { onNavigateToFiles() },
                     shape = RoundedCornerShape(20.dp),
-                    colors = CardDefaults.cardColors(containerColor = PrimaryBlue)
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
                 ) {
                     Column(
                         modifier = Modifier
@@ -184,14 +185,14 @@ fun HomeScreen(
                         Icon(
                             imageVector = Icons.Default.Send,
                             contentDescription = "إرسال ملفات",
-                            tint = Color.White,
+                            tint = MaterialTheme.colorScheme.onPrimaryContainer,
                             modifier = Modifier.size(28.dp)
                         )
                         Text(
                             text = "إرسال ملفات",
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
-                            color = Color.White
+                            color = MaterialTheme.colorScheme.onPrimaryContainer
                         )
                     }
                 }
@@ -217,7 +218,7 @@ fun HomeScreen(
                         Icon(
                             imageVector = Icons.Default.Download,
                             contentDescription = "استقبال ملفات",
-                            tint = PrimaryCyan,
+                            tint = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.size(28.dp)
                         )
                         Text(
@@ -239,7 +240,7 @@ fun HomeScreen(
                     .clickable { folderPickerLauncher.launch(null) },
                 shape = RoundedCornerShape(20.dp),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
-                border = androidx.compose.foundation.BorderStroke(1.dp, PrimaryCyan.copy(alpha = 0.4f))
+                border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.4f))
             ) {
                 Row(
                     modifier = Modifier
@@ -251,13 +252,13 @@ fun HomeScreen(
                         modifier = Modifier
                             .size(48.dp)
                             .clip(CircleShape)
-                            .background(PrimaryCyan.copy(alpha = 0.15f)),
+                            .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)),
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
                             imageVector = Icons.Default.FolderZip,
                             contentDescription = "مشاركة مجلد كامل",
-                            tint = PrimaryCyan,
+                            tint = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.size(26.dp)
                         )
                     }
@@ -274,18 +275,82 @@ fun HomeScreen(
                         Text(
                             text = "تحديد مجلد كامل من النظام ونقله بنفس الهيكلية والمجلدات الفرعية.",
                             style = MaterialTheme.typography.bodySmall,
-                            color = TextSecondaryDark
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
 
                     Icon(
                         imageVector = Icons.Default.ChevronLeft,
                         contentDescription = null,
-                        tint = PrimaryCyan
+                        tint = MaterialTheme.colorScheme.primary
                     )
                 }
             }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Customizable UI Theme Customizer Banner
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onOpenThemeSelector() },
+                shape = RoundedCornerShape(20.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+                border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.3f))
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(48.dp)
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Palette,
+                            contentDescription = "تخصيص الواجهة",
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(26.dp)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.width(16.dp))
+
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = "تخصيص مظهر الواجهة",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        Text(
+                            text = "تغيير الألوان وأنماط المظهر الرسومية وتخصيص الواجهة حسب ذوقك.",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+
+                    Surface(
+                        shape = RoundedCornerShape(10.dp),
+                        color = MaterialTheme.colorScheme.primary
+                    ) {
+                        Text(
+                            text = "تغيير",
+                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onPrimary,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+            }
         }
+
 
         // Recent Transfers Overview
         item {

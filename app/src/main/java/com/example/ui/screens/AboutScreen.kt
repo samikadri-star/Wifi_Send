@@ -28,7 +28,9 @@ import com.example.ui.theme.PrimaryCyan
 import com.example.ui.theme.TextSecondaryDark
 
 @Composable
-fun AboutScreen() {
+fun AboutScreen(
+    onOpenThemeSelector: () -> Unit = {}
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -41,13 +43,20 @@ fun AboutScreen() {
             modifier = Modifier
                 .size(96.dp)
                 .clip(CircleShape)
-                .background(Brush.radialGradient(listOf(PrimaryCyan, PrimaryBlue))),
+                .background(
+                    Brush.radialGradient(
+                        listOf(
+                            MaterialTheme.colorScheme.primary,
+                            MaterialTheme.colorScheme.primaryContainer
+                        )
+                    )
+                ),
             contentAlignment = Alignment.Center
         ) {
             Icon(
                 imageVector = Icons.Default.WifiTethering,
                 contentDescription = "شعار التطبيق",
-                tint = Color.White,
+                tint = MaterialTheme.colorScheme.onPrimary,
                 modifier = Modifier.size(54.dp)
             )
         }
@@ -66,13 +75,13 @@ fun AboutScreen() {
 
         Surface(
             shape = RoundedCornerShape(12.dp),
-            color = PrimaryCyan.copy(alpha = 0.2f)
+            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)
         ) {
             Text(
                 text = "الإصدار 1.0.0 Pro High-Speed Edition",
                 modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
                 style = MaterialTheme.typography.labelMedium,
-                color = PrimaryCyan,
+                color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Bold
             )
         }
@@ -86,7 +95,12 @@ fun AboutScreen() {
                 .clip(RoundedCornerShape(24.dp))
                 .border(
                     2.dp,
-                    Brush.horizontalGradient(listOf(PrimaryCyan, PrimaryBlue)),
+                    Brush.horizontalGradient(
+                        listOf(
+                            MaterialTheme.colorScheme.primary,
+                            MaterialTheme.colorScheme.primaryContainer
+                        )
+                    ),
                     RoundedCornerShape(24.dp)
                 ),
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
@@ -100,8 +114,8 @@ fun AboutScreen() {
             ) {
                 Surface(
                     shape = CircleShape,
-                    color = PrimaryCyan.copy(alpha = 0.2f),
-                    border = androidx.compose.foundation.BorderStroke(1.5.dp, PrimaryCyan)
+                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
+                    border = androidx.compose.foundation.BorderStroke(1.5.dp, MaterialTheme.colorScheme.primary)
                 ) {
                     Box(
                         modifier = Modifier
@@ -112,7 +126,7 @@ fun AboutScreen() {
                         Icon(
                             imageVector = Icons.Default.Code,
                             contentDescription = null,
-                            tint = PrimaryCyan,
+                            tint = MaterialTheme.colorScheme.primary,
                             modifier = Modifier.size(32.dp)
                         )
                     }
@@ -121,25 +135,89 @@ fun AboutScreen() {
                 Spacer(modifier = Modifier.height(14.dp))
 
                 Text(
-                    text = "تطوير سامي القادري",
-                    style = MaterialTheme.typography.displayMedium,
-                    fontWeight = FontWeight.Black,
-                    color = PrimaryCyan,
+                    text = "Developed by Sami Al-Qadri",
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary,
                     textAlign = TextAlign.Center
                 )
 
-                Spacer(modifier = Modifier.height(6.dp))
+                Text(
+                    text = "تطوير سامي القادري",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    textAlign = TextAlign.Center
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    text = "تم بناء وتطوير هذا التطبيق باحترافية عالية لتقديم تجربة نقل بيانات فائقة السرعة مع كامل الميزات المتقدمة.",
+                    text = "تم بناء وتطوير هذا التطبيق باحترافية عالية لتقديم تجربة نقل بيانات فائقة السرعة مع كامل الميزات المتقدمة وتطبيقات واجهة المستخدم التفاعلية المتنوعة.",
                     style = MaterialTheme.typography.bodyMedium,
-                    color = TextSecondaryDark,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center
                 )
             }
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(20.dp))
+
+        // Customizable Themes Card
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(20.dp),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+            border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.3f))
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(18.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(46.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.2f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Palette,
+                        contentDescription = "تخصيص ألوان الواجهة",
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.width(14.dp))
+
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = "تخصيص ألوان التطبيق",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Text(
+                        text = "اختر من بين 6 أنماط ألوان جذابة (أزرق نيون، بنفسجي، زمردي، ذهبي، ياقوتي، وأبيض عصري).",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+
+                Button(
+                    onClick = onOpenThemeSelector,
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Text("تغيير المظهر")
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(20.dp))
 
         // Main Features Card
         Card(
@@ -187,8 +265,8 @@ fun AboutScreen() {
 
                 FeatureRow(
                     icon = Icons.Default.Palette,
-                    title = "واجهة رسومية حديثة وعصرية",
-                    desc = "تصميم متناسق جذاب يدعم اللغة العربية التفاعلية والوضع الليلي المريح."
+                    title = "واجهة مخصصة وقابلة للتغيير",
+                    desc = "أنماط ألوان ومظاهر بصرية متعددة قابلة للتخصيص حسب تفضيلات المستخدم."
                 )
             }
         }
@@ -216,9 +294,9 @@ fun AboutScreen() {
                 Spacer(modifier = Modifier.height(10.dp))
 
                 Text(
-                    text = "• بروتوكول المقابس (Socket Protocol): TCP Chunked Stream\n• حجم الحزمة المؤقتة (Buffer): 512 KB High-Throughput\n• قواعد البيانات المحلية: Android Room Database Persistence\n• واجهة المستخدم: Jetpack Compose Material 3 Design",
+                    text = "• بروتوكول المقابس (Socket Protocol): TCP Chunked Stream\n• حجم الحزمة المؤقتة (Buffer): 512 KB High-Throughput\n• قواعد البيانات المحلية: Android Room Database Persistence\n• واجهة المستخدم: Jetpack Compose Material 3 Dynamic Custom Themes",
                     style = MaterialTheme.typography.bodySmall,
-                    color = TextSecondaryDark,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     lineHeight = 22.sp
                 )
             }
@@ -227,9 +305,9 @@ fun AboutScreen() {
         Spacer(modifier = Modifier.height(24.dp))
 
         Text(
-            text = "جميع الحقوق محفوظة © 2026 - تطوير سامي القادري",
+            text = "Developed by Sami Al-Qadri © 2026",
             style = MaterialTheme.typography.labelMedium,
-            color = TextSecondaryDark,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center
         )
     }

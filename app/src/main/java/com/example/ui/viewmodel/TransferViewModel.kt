@@ -1,6 +1,7 @@
 package com.example.ui.viewmodel
 
 import android.app.Application
+import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,17 +12,38 @@ import com.example.data.model.FileFolderItem
 import com.example.data.model.TransferProgress
 import com.example.data.model.WifiP2pDeviceItem
 import com.example.data.repository.TransferRepository
+import com.example.ui.theme.AppThemeStyle
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class TransferViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository: TransferRepository
+    private val prefs = application.getSharedPreferences("app_settings", Context.MODE_PRIVATE)
+
+    private val _currentTheme = MutableStateFlow(getInitialTheme())
+    val currentTheme: StateFlow<AppThemeStyle> = _currentTheme.asStateFlow()
 
     init {
         val database = AppDatabase.getDatabase(application)
         repository = TransferRepository(application, database.transferDao())
     }
+
+    private fun getInitialTheme(): AppThemeStyle {
+        val savedName = prefs.getString("theme_style", AppThemeStyle.IMMERSIVE_CYAN.name)
+        return try {
+            AppThemeStyle.valueOf(savedName ?: AppThemeStyle.IMMERSIVE_CYAN.name)
+        } catch (e: Exception) {
+            AppThemeStyle.IMMERSIVE_CYAN
+        }
+    }
+
+    fun setThemeStyle(themeStyle: AppThemeStyle) {
+        _currentTheme.value = themeStyle
+        prefs.edit().putString("theme_style", themeStyle.name).apply()
+        _uiMessage.value = "تم تغيير مظهر التطبيق إلى: ${themeStyle.titleArabic}"
+    }
+
 
     val tasks: StateFlow<List<TransferTaskEntity>> = repository.allTasks
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())

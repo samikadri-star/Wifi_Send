@@ -1,7 +1,6 @@
 package com.example
 
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -14,14 +13,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
+import com.example.ui.components.ThemeSelectorSheet
 import com.example.ui.screens.AboutScreen
 import com.example.ui.screens.FilesFoldersScreen
 import com.example.ui.screens.HomeScreen
 import com.example.ui.screens.P2pScanScreen
 import com.example.ui.screens.TransfersScreen
 import com.example.ui.theme.MyApplicationTheme
-import com.example.ui.theme.PrimaryCyan
 import com.example.ui.viewmodel.TransferViewModel
 
 enum class AppNavDestination(val labelArabic: String, val icon: ImageVector) {
@@ -41,7 +39,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            MyApplicationTheme {
+            val currentTheme by viewModel.currentTheme.collectAsState()
+            MyApplicationTheme(themeStyle = currentTheme) {
                 MainAppStructure(viewModel)
             }
         }
@@ -52,6 +51,8 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MainAppStructure(viewModel: TransferViewModel) {
     var currentDestination by remember { mutableStateOf(AppNavDestination.HOME) }
+    var showThemeSelector by remember { mutableStateOf(false) }
+    val currentTheme by viewModel.currentTheme.collectAsState()
     val uiMessage by viewModel.uiMessage.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -60,6 +61,17 @@ fun MainAppStructure(viewModel: TransferViewModel) {
             snackbarHostState.showSnackbar(it)
             viewModel.clearUiMessage()
         }
+    }
+
+    if (showThemeSelector) {
+        ThemeSelectorSheet(
+            currentTheme = currentTheme,
+            onThemeSelected = { selectedTheme ->
+                viewModel.setThemeStyle(selectedTheme)
+                showThemeSelector = false
+            },
+            onDismissRequest = { showThemeSelector = false }
+        )
     }
 
     Scaffold(
@@ -78,6 +90,15 @@ fun MainAppStructure(viewModel: TransferViewModel) {
                         },
                         fontWeight = FontWeight.Bold
                     )
+                },
+                actions = {
+                    IconButton(onClick = { showThemeSelector = true }) {
+                        Icon(
+                            imageVector = Icons.Default.Palette,
+                            contentDescription = "تخصيص مظهر التطبيق",
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surface
@@ -98,14 +119,14 @@ fun MainAppStructure(viewModel: TransferViewModel) {
                             Icon(
                                 imageVector = destination.icon,
                                 contentDescription = destination.labelArabic,
-                                tint = if (isSelected) PrimaryCyan else MaterialTheme.colorScheme.onSurfaceVariant
+                                tint = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         },
                         label = {
                             Text(
                                 text = destination.labelArabic,
                                 fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-                                color = if (isSelected) PrimaryCyan else MaterialTheme.colorScheme.onSurfaceVariant
+                                color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
                     )
@@ -123,7 +144,8 @@ fun MainAppStructure(viewModel: TransferViewModel) {
                     viewModel = viewModel,
                     onNavigateToFiles = { currentDestination = AppNavDestination.FILES },
                     onNavigateToP2pScan = { currentDestination = AppNavDestination.SCAN },
-                    onNavigateToTransfers = { currentDestination = AppNavDestination.TRANSFERS }
+                    onNavigateToTransfers = { currentDestination = AppNavDestination.TRANSFERS },
+                    onOpenThemeSelector = { showThemeSelector = true }
                 )
                 AppNavDestination.FILES -> FilesFoldersScreen(
                     viewModel = viewModel,
@@ -136,8 +158,11 @@ fun MainAppStructure(viewModel: TransferViewModel) {
                 AppNavDestination.TRANSFERS -> TransfersScreen(
                     viewModel = viewModel
                 )
-                AppNavDestination.ABOUT -> AboutScreen()
+                AppNavDestination.ABOUT -> AboutScreen(
+                    onOpenThemeSelector = { showThemeSelector = true }
+                )
             }
         }
     }
 }
+
